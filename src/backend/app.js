@@ -22,6 +22,7 @@ app.use(express.json());
 app.use(cors());
 
 router.use('/meals', mealsRouter);
+router.use('/reservations', reservationsRouter);
 
 const errMessage = 'Sorry, there are no meals.';
 
