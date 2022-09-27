@@ -25,9 +25,7 @@ router.use('/meals', mealsRouter);
 const errMessage = 'Sorry, there are no meals.';
 
 app.get('/future-meals', async (req, res) => {
-  const [row] = await knex.raw(
-    ' SELECT * FROM `meal` WHERE `when` > "2022-08-11"'
-  );
+  const [row] = await knex.raw(' SELECT * FROM `meal` WHERE `when` > NOW()');
   if (row.length === 0) {
     res.status(404).json({ message: errMessage });
   } else {
@@ -36,9 +34,7 @@ app.get('/future-meals', async (req, res) => {
 });
 
 app.get('/past-meals', async (req, res) => {
-  const [row] = await knex.raw(
-    ' SELECT * FROM `meal` WHERE `when` < "2022-08-11"'
-  );
+  const [row] = await knex.raw(' SELECT * FROM `meal` WHERE `when` < NOW()');
   if (row.length === 0) {
     res.status(404).json({ message: errMessage });
   } else {
