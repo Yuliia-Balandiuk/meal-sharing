@@ -1,12 +1,13 @@
-const express = require("express");
+const express = require('express');
 const app = express();
 const router = express.Router();
-const path = require("path");
+const path = require('path');
+const knex = require('./database');
 
-const mealsRouter = require("./api/meals");
-const buildPath = path.join(__dirname, "../../dist");
+const mealsRouter = require('./api/meals');
+const buildPath = path.join(__dirname, '../../dist');
 const port = process.env.PORT || 3000;
-const cors = require("cors");
+const cors = require('cors');
 
 // For week4 no need to look into this!
 // Serve the built client html
@@ -19,16 +20,65 @@ app.use(express.json());
 
 app.use(cors());
 
-router.use("/meals", mealsRouter);
+router.use('/meals', mealsRouter);
+
+const errMessage = 'Sorry, there are no meals.';
+
+app.get('/future-meals', async (req, res) => {
+  const [row] = await knex.raw(' SELECT * FROM `meal` WHERE `when` > NOW()');
+  if (row.length === 0) {
+    res.status(404).json({ message: errMessage });
+  } else {
+    res.json(row);
+  }
+});
+
+app.get('/past-meals', async (req, res) => {
+  const [row] = await knex.raw(' SELECT * FROM `meal` WHERE `when` < NOW()');
+  if (row.length === 0) {
+    res.status(404).json({ message: errMessage });
+  } else {
+    res.json(row);
+  }
+});
+
+app.get('/all-meals', async (req, res) => {
+  const [row] = await knex.raw('SELECT * FROM `meal` ORDER BY `id`');
+  if (row.length === 0) {
+    res.status(404).json({ message: errMessage });
+  } else {
+    res.json(row);
+  }
+});
+
+app.get('/first-meal', async (req, res) => {
+  const [row] = await knex.raw(' SELECT * FROM `meal` ORDER BY `id` LIMIT 1 ');
+  if (row.length === 0) {
+    res.status(404).json({ message: errMessage });
+  } else {
+    res.json(row);
+  }
+});
+
+app.get('/last-meal', async (req, res) => {
+  const [row] = await knex.raw(
+    ' SELECT * FROM `meal` ORDER BY `id` DESC LIMIT 1'
+  );
+  if (row.length === 0) {
+    res.status(404).json({ message: errMessage });
+  } else {
+    res.json(row);
+  }
+});
 
 if (process.env.API_PATH) {
   app.use(process.env.API_PATH, router);
 } else {
-  throw "API_PATH is not set. Remember to set it in your .env file"
+  throw 'API_PATH is not set. Remember to set it in your .env file';
 }
 
 // for the frontend. Will first be covered in the react class
-app.use("*", (req, res) => {
+app.use('*', (req, res) => {
   res.sendFile(path.join(`${buildPath}/index.html`));
 });
 
