@@ -4,12 +4,12 @@ const knex = require('../database');
 
 router.get('/', async (req, res) => {
   try {
-    const allMeals = await knex.select().table('meal');
+    const allMeals = await knex.select('*').table('meal');
 
     if (allMeals.length !== 0) {
       res.send(allMeals);
     } else {
-      res.status(404).json({ error: 'Meals not found' });
+      res.status(200).json({ error: 'No meals found' });
     }
   } catch (error) {
     res.status(500).json({ error: 'Server error' });
