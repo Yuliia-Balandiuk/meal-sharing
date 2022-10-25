@@ -5,6 +5,7 @@ const path = require('path');
 const knex = require('./database');
 
 const mealsRouter = require('./api/meals');
+const reviewsRouter = require('./api/reviews');
 const reservationsRouter = require('./api/reservations');
 const buildPath = path.join(__dirname, '../../dist');
 const port = process.env.PORT || 3000;
@@ -22,6 +23,7 @@ app.use(express.json());
 app.use(cors());
 
 router.use('/meals', mealsRouter);
+router.use('/reviews', reviewsRouter);
 router.use('/reservations', reservationsRouter);
 
 const errMessage = 'Sorry, there are no meals.';
