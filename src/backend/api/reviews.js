@@ -51,8 +51,10 @@ router.put('/:id', async (req, res) => {
       res.status(400).json({ error: 'Review not found' });
     }
     if (reviewBody.length !== 0) {
-      await knex('review').where({ id: reviewId }).update(reviewBody);
-      const updatedReview = await knex('review').where({ id: reviewId });
+      const updatedReview = await knex('review')
+        .where({ id: reviewId })
+        .update(reviewBody);
+
       res.send(updatedReview);
     } else {
       res.status(404).json({ error: 'It is nothing to update' });

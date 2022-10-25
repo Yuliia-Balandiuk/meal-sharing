@@ -55,12 +55,12 @@ router.put('/:id', async (req, res) => {
       res.status(400).json({ error: 'Reservation not found' });
     }
     if (reservationBody.length !== 0) {
-      await knex('reservation')
-        .where({ id: reservationId })
+      const updatedReservation = await knex('reservation')
+        .where({
+          id: reservationId,
+        })
         .update(reservationBody);
-      const updatedReservation = await knex('reservation').where({
-        id: reservationId,
-      });
+
       res.send(updatedReservation);
     } else {
       res.status(404).json({ error: 'It is nothing to update' });

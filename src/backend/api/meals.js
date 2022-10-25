@@ -8,20 +8,16 @@ router.get('/', async (req, res) => {
   if ('maxPrice' in req.query) {
     const maxPrice = parseInt(req.query.maxPrice);
 
-    if (!maxPrice) {
-      res.status(404).json({ error: 'You did not enter max price' });
-    } else {
-      meals = query.where('price', '<', maxPrice);
-    }
+    meals = mealsTable.where('price', '<', maxPrice);
   }
 
   if ('availableReservations' in req.query) {
-    const availableReservations = req.query.availableReservations;
+    const isAvailableReservations = req.query.availableReservations;
 
     meals = query
       .join('reservation', 'reservation.meal_id', '=', 'meal.id')
       .groupBy('meal.id');
-    if (availableReservations === 'true') {
+    if (isAvailableReservations === 'true') {
       meals = meals.where(
         'meal.max_reservations',
         '>',
@@ -37,51 +33,33 @@ router.get('/', async (req, res) => {
   }
 
   if ('title' in req.query) {
-    const title = String(req.query.title);
+    const title = String(req.query.title).toLocaleLowerCase();
 
-    if (!title) {
-      res.status(404).json({ error: 'You did not enter title' });
-    } else {
-      meals = query.where('title', 'like', `%${title}%`);
-    }
+    meals = query.where('title', 'like', `%${title}%`);
   }
 
   if ('dateAfter' in req.query) {
     const dateAfter = new Date(req.query.dateAfter);
 
-    if (!dateAfter) {
-      res.status(404).json({ error: 'You did not enter date' });
-    } else {
-      meals = query.where('when', '>', dateAfter);
-    }
+    meals = query.where('when', '>=', dateAfter);
   }
 
   if ('dateBefore' in req.query) {
     const dateBefore = new Date(req.query.dateAfter);
 
-    if (!dateBefore) {
-      res.status(404).json({ error: 'You did not enter date' });
-    } else {
-      meals = query.where('when', '<', dateBefore);
-    }
+    meals = query.where('when', '<=', dateBefore);
   }
 
   if ('limit' in req.query) {
     const limit = parseInt(req.query.limit);
 
-    if (!limit) {
-      res.status(404).json({ error: 'You did not enter limit' });
-    } else {
-      meals = query.limit(limit);
-    }
+    meals = query.limit(limit);
   }
 
   if ('sortKey' in req.query) {
     const sortKey = String(req.query.sortKey);
 
-    if (!sortKey) {
-      res.status(404).json({ error: 'You did not enter sort key' });
-    } else if (sortKey === 'price') {
+    if (sortKey === 'price') {
       meals = query.orderByRaw(sortKey);
     } else if (sortKey === 'when') {
       meals = query.orderBy(sortKey);
@@ -138,7 +116,7 @@ router.get('/:id', async (req, res) => {
     if (meal.length !== 0) {
       res.send(meal);
     } else {
-      res.status(404).json({ error: 'Meal not found' });
+      res.status(404).json({ massage: 'Meal not found' });
     }
   } catch (error) {
     res.status(500).json({ error: 'Server error' });
@@ -155,9 +133,9 @@ router.put('/:id', async (req, res) => {
       res.status(400).json({ error: 'Meal not found' });
     }
     if (mealBody.length !== 0) {
-      await knex('meal').where({ id: mealId }).update(mealBody);
       const updatedMeal = await knex('meal').where({ id: mealId });
-      res.send(updatedMeal);
+
+      res.send(updatedMeal).update(mealBody);
     } else {
       res.status(404).json({ error: 'It is nothing to update' });
     }
@@ -172,7 +150,7 @@ router.delete('/:id', async (req, res) => {
     const meal = await knex('meal').where({ id: mealId });
 
     if (meal.length === 0) {
-      res.status(400).json({ error: 'Meal not found' });
+      res.status(400).json({ message: 'Meal not found' });
     }
     await knex('meal').where({ id: mealId }).del();
     res.send({ message: `Meal with id: ${mealId} deleted` });
