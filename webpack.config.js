@@ -26,10 +26,10 @@ module.exports = {
         use: ['style-loader', 'css-loader', 'sass-loader'],
       },
       {
-        test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+        test: /\.(png|woff|woff2|eot|ttf|svg|jpg)$/,
         use: {
           loader: 'url-loader',
-          options: { limit: 100000 },
+          options: { limit: 1000000000 },
         },
       },
     ],

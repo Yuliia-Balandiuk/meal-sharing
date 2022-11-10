@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import logo from '../assets/images/logo.png';
 import NavMenu from './NavMenu';
 
@@ -16,11 +17,14 @@ const HeaderWrapper = styled.header`
 function Header() {
   return (
     <HeaderWrapper>
-      <img
-        style={{ maxWidth: '5rem', cursor: 'pointer' }}
-        src={logo}
-        alt='logo'
-      />
+      <Link to='/'>
+        <img
+          style={{ maxWidth: '5rem', cursor: 'pointer' }}
+          src={logo}
+          alt='logo'
+        />
+      </Link>
+
       <NavMenu />
     </HeaderWrapper>
   );

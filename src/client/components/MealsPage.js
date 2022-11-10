@@ -1,16 +1,20 @@
 import React from 'react';
 import styled from 'styled-components';
+import AddMealForm from './AddMealForm';
+import MealsList from './MealsList';
 
 const MainWrapper = styled.main`
-  max-width: 90rem;
-  background-color: grey;
+  max-width: 70%;
+  margin: 0 auto;
+  text-align: center;
 `;
 
 function MealsPage() {
   return (
-    <div>
-      <p>MAIN CONTENT</p>
-    </div>
+    <>
+      <MealsList />
+      <AddMealForm />
+    </>
   );
 }
 

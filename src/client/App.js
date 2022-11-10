@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import MealsPage from './components/MealsPage';
+import HomePage from './components/HomePage';
 import TestComponent from './components/TestComponent/TestComponent';
 
 function App() {
@@ -11,11 +12,12 @@ function App() {
       <Header />
       <Switch>
         <Route exact path='/'>
+          <HomePage />
+        </Route>
+        <Route exact path='/meals'>
           <MealsPage />
         </Route>
-        <Route exact path='/lol'>
-          <p>lol</p>
-        </Route>
+
         <Route exact path='/test-component'>
           <TestComponent></TestComponent>
         </Route>
